@@ -40,7 +40,7 @@ async function submitForm() {
   loading.value = true
   filenames.value = []
 
-  if(isValidFiles(data.value.files)) {
+  if (isValidFiles(data.value.files)) {
     await postData()
   } else {
     loading.value = false
