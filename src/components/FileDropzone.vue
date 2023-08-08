@@ -67,6 +67,7 @@ async function submitForm() {
   loading.value = false
   data.value.files = []
 }
+const success = ref(null)
 
 async function postData() {
   const formData = new FormData()
@@ -75,7 +76,9 @@ async function postData() {
   data.value.files.forEach((file) => formData.append('marketo[files][]', file))
 
   try {
-    const response = await fetch('http://localhost:3000/api/marketo', {
+    const ENDPOINT = 'https://pre-admin.furien.jp/api/marketo'
+    // const ENDPOINT = 'http://localhost:3000/api/marketo'
+    const response = await fetch(ENDPOINT, {
       method: 'POST',
       body: formData
     })
@@ -83,6 +86,7 @@ async function postData() {
       throw new Error('Network response was not ok')
     }
     console.info('送信完了')
+    success.value = '送信完了'
   } catch (err) {
     error.value = err.message
   } finally {
@@ -94,6 +98,7 @@ async function postData() {
 <template>
   <form @submit.prevent="submitForm">
     <div>{{ isDraggingOver }}</div>
+    <div v-if="success">{{ success }}</div>
     <div v-if="error">{{ error }}</div>
     <div v-if="loading">送信中...</div>
 
