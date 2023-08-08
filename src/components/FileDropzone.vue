@@ -69,8 +69,10 @@ async function submitForm() {
 }
 const success = ref(null)
 
-const ENDPOINT = ref('https://pre-admin.furien.jp/api/marketo')
-// const ENDPOINT = ref('http://localhost:3000/api/marketo')
+const endpoint = ref('https://pre-admin.furien.jp/api/marketo')
+const ENDPOINT = 'https://pre-admin.furien.jp/api/marketo'
+// const endpoint = ref('http://localhost:3000/api/marketo')
+// const ENDPOINT = 'http://localhost:3000/api/marketo'
 
 async function postData() {
   const formData = new FormData()
@@ -98,7 +100,7 @@ async function postData() {
 
 <template>
   <form @submit.prevent="submitForm">
-    <div>{{ ENDPOINT }}</div>
+    <div>{{ endpoint }}</div>
     <div>{{ isDraggingOver }}</div>
     <div v-if="success">{{ success }}</div>
     <div v-if="error">{{ error }}</div>
