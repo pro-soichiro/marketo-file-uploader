@@ -1,7 +1,23 @@
 <script setup>
 import { ref } from 'vue'
+import {
+  isValidFileCount,
+  isValidExtension,
+  isValidSize,
+  isValidFileName
+} from '@/utils/validation'
 
 const isDraggingOver = ref(false)
+const data = ref({ files: [] })
+const filenames = ref([])
+const error = ref([])
+const loading = ref(false)
+
+const fileInput = ref(null)
+
+function openFileDialog() {
+  fileInput.value?.click()
+}
 
 function dragEnter() {
   isDraggingOver.value = true
@@ -11,56 +27,29 @@ function dragLeave() {
   isDraggingOver.value = false
 }
 
-const data = ref({ files: [] })
-const filenames = ref([])
-const res = ref(null)
-const error = ref([])
-const loading = ref(false)
-const allowedExtensions = ['pdf', 'docs', 'doc', 'xlsx', 'xls']
-const maxFileSizeMb = 3
-const maxFileCount = 3
-
 function handleFiles(event) {
   isDraggingOver.value = false
-  let files
+  const files =
+    event.type === 'change' ? Array.from(event.target.files) : Array.from(event.dataTransfer.files)
 
-  if (event.type === 'change') {
-    files = Array.from(event.target.files)
-  } else if (event.type === 'drop') {
-    files = Array.from(event.dataTransfer.files)
-  }
-
-  if (!files) return
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i]
-
-    const extension = file.name.split('.').pop().toLowerCase()
-
-    if (!allowedExtensions.includes(extension)) {
-      alert(
-        `${
-          file.name
-        } は許可されていないファイル形式です。\n(許可されている拡張子: ${allowedExtensions.join(
-          ' '
-        )})`
-      )
+  for (const file of files) {
+    if (!isValidExtension(file.name)) {
+      alert(`許可されていないファイル形式です: ${file.name}`)
       return
     }
 
-    if (!(file.size <= maxFileSizeMb * 1024 * 1024)) {
-      alert(`ファイルサイズの最大値は3MBまでです。`)
+    if (!isValidSize(file.size)) {
+      alert('ファイルサイズの最大値は3MBまでです。')
       return
     }
 
-    const invalidChars = /[<>:"/\\|?*]/
-    if (invalidChars.test(file.name)) {
+    if (!isValidFileName(file.name)) {
       alert('ファイル名に使用できない文字が含まれています。')
       return
     }
   }
 
-  if (files.length + data.value.files.length > maxFileCount) {
+  if (isValidFileCount(files.length, data.value.files.length)) {
     alert('最大添付数は3ファイルまでです。')
     return
   }
@@ -75,19 +64,15 @@ async function submitForm() {
   loading.value = true
   filenames.value = []
   await postData()
-
   loading.value = false
   data.value.files = []
 }
 
 async function postData() {
   const formData = new FormData()
-
   formData.append('marketo[mktoId]', document.getElementById('mktoId').value)
   formData.append('marketo[email]', document.getElementById('Email').value)
-  data.value.files.forEach((file) => {
-    formData.append('marketo[files][]', file)
-  })
+  data.value.files.forEach((file) => formData.append('marketo[files][]', file))
 
   try {
     const response = await fetch('http://localhost:3000/api/marketo', {
@@ -97,20 +82,11 @@ async function postData() {
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
-    res.value = await response.json()
     console.info('送信完了')
   } catch (err) {
     error.value = err.message
   } finally {
     loading.value = false
-  }
-}
-
-const fileInput = ref(null)
-
-function openFileDialog() {
-  if (fileInput.value) {
-    fileInput.value.click()
   }
 }
 </script>
