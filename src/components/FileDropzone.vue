@@ -69,6 +69,9 @@ async function submitForm() {
 }
 const success = ref(null)
 
+const ENDPOINT = ref('https://pre-admin.furien.jp/api/marketo')
+// const ENDPOINT = ref('http://localhost:3000/api/marketo')
+
 async function postData() {
   const formData = new FormData()
   formData.append('marketo[mktoId]', document.getElementById('mktoId').value)
@@ -76,8 +79,6 @@ async function postData() {
   data.value.files.forEach((file) => formData.append('marketo[files][]', file))
 
   try {
-    const ENDPOINT = 'https://pre-admin.furien.jp/api/marketo'
-    // const ENDPOINT = 'http://localhost:3000/api/marketo'
     const response = await fetch(ENDPOINT, {
       method: 'POST',
       body: formData
@@ -97,6 +98,7 @@ async function postData() {
 
 <template>
   <form @submit.prevent="submitForm">
+    <div>{{ ENDPOINT }}</div>
     <div>{{ isDraggingOver }}</div>
     <div v-if="success">{{ success }}</div>
     <div v-if="error">{{ error }}</div>
