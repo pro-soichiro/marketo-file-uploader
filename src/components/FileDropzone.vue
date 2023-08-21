@@ -13,6 +13,8 @@ import {
 const isDraggingOver = ref(false)
 const data = ref({ files: [] })
 const filenames = ref([])
+
+const success = ref(null)
 const errors = ref([])
 const loading = ref(false)
 
@@ -69,17 +71,18 @@ function handleFiles(event) {
 }
 
 async function submitForm() {
+  if (data.value.files.length <= 0) {
+    alert('ファイルを選択してください。')
+    return
+  }
+
   loading.value = true
   filenames.value = []
+  errors.value = []
   await postData()
-  loading.value = false
-  data.value.files = []
 }
-const success = ref(null)
 
 async function postData() {
-  loading.value = true
-  errors.value = []
   const mktoId = document.getElementById('mktoId').value
   const email = document.getElementById('Email').value
 
@@ -87,7 +90,6 @@ async function postData() {
     let files = data.value.files
     let processedFiles = 0
     let attachments = []
-    let totalfilesize = 0
     let totalfilename = []
 
     for (let i = 0; i < files.length; i++) {
@@ -101,8 +103,6 @@ async function postData() {
         })
         totalfilename.push(files[i].name)
 
-        totalfilesize += base64File.length
-
         processedFiles++
 
         if (processedFiles === files.length) {
@@ -114,16 +114,25 @@ async function postData() {
             Body: `■ファイルのアップロードがありました。<br><br>
               Marketo ID:<br>${mktoId}<br><br>
               Email:<br>${email}<br><br>
-              ファイルサイズ:<br>${totalfilesize / 1024 / 1024} MB<br><br>
               経歴書:<br>${totalfilename.join('<br>')}
             `,
             Attachments: attachments
           })
+          loading.value = false
+
           if (response == 'OK') {
-            success.value = '送信完了'
+            success.value = '送信完了しました。'
+            setTimeout(() => {
+              window.location.href = 'http://localhost:5173'
+            }, 2000)
           } else {
-            errors.value.push('エラーがあります。')
-            errors.value.push(response)
+            errors.value.push('サーバーエラーが発生しました。')
+            errors.value.push('お手数ですが、マイページからのアップロードをお願いいたします。')
+            errors.value.push('自動でログイン画面へ遷移します。')
+            console.error(response)
+            setTimeout(() => {
+              window.location.href = 'https://admin.furien.jp/users/sign_in/'
+            }, 3000)
           }
         }
       }
@@ -131,16 +140,20 @@ async function postData() {
       reader.readAsDataURL(files[i])
     }
   } catch (err) {
-    errors.value = err.message
-  } finally {
     loading.value = false
+    errors.value.push('サーバーエラーが発生しました。')
+    errors.value.push('お手数ですが、マイページからのアップロードをお願いいたします。')
+    errors.value.push('自動でログイン画面へ遷移します。')
+    console.error(err)
+    setTimeout(() => {
+      window.location.href = 'https://admin.furien.jp/users/sign_in/'
+    }, 3000)
   }
 }
 </script>
 
 <template>
-  <form ref="form" enctype="multipart/form-data" method="post" @submit.prevent="submitForm">
-    <div style="text-align: center">{{ endpoint }}</div>
+  <form @submit.prevent="submitForm">
     <div v-if="success">{{ success }}</div>
     <ul v-if="errors">
       <li v-for="(error, key) in errors" v-bind:key="key">
