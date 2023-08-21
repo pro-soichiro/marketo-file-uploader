@@ -14,35 +14,33 @@ const isDraggingOver = ref(false)
 const data = ref({ files: [] })
 const filenames = ref([])
 
-const success = ref(null)
-const errors = ref([])
-const loading = ref(false)
+const status = ref('ready')
 
 const fileInput = ref(null)
 
-let dragCounter = 0;
+let dragCounter = 0
 
 function openFileDialog() {
   fileInput.value?.click()
 }
 
 function dragEnter() {
-  dragCounter++;
+  dragCounter++
   if (dragCounter === 1) {
-    isDraggingOver.value = true;
+    isDraggingOver.value = true
   }
 }
 
 function dragLeave() {
-  dragCounter--;
+  dragCounter--
   if (dragCounter === 0) {
-    isDraggingOver.value = false;
+    isDraggingOver.value = false
   }
 }
 
 function handleFiles(event) {
-  dragCounter = 0;
-  isDraggingOver.value = false;
+  dragCounter = 0
+  isDraggingOver.value = false
 
   const files =
     event.type === 'change' ? Array.from(event.target.files) : Array.from(event.dataTransfer.files)
@@ -86,9 +84,7 @@ async function submitForm() {
     return
   }
 
-  loading.value = true
-  filenames.value = []
-  errors.value = []
+  status.value = 'sending'
   await postData()
 }
 
@@ -118,6 +114,7 @@ async function postData() {
         if (processedFiles === files.length) {
           const response = await Email.send({
             SecureToken: '99fe4c28-48bf-4027-b9f2-a5cd421bcc82',
+            // SecureToken: 'fail secure token',
             To: 'soichiro.mamiya@anconsulting.jp',
             From: 'soichiro.mamiya@anconsulting.jp',
             Subject: '【Marketo】経歴書アップロード通知',
@@ -128,19 +125,14 @@ async function postData() {
             `,
             Attachments: attachments
           })
-          loading.value = false
-
           if (response == 'OK') {
-            success.value = '送信完了しました。'
+            status.value = 'success'
             setTimeout(() => {
               // window.location.href = 'http://localhost:5173'
               location.reload()
             }, 2000)
           } else {
-            errors.value.push('サーバーエラーが発生しました。')
-            errors.value.push('お手数ですが、マイページからのアップロードをお願いいたします。')
-            errors.value.push('自動でログイン画面へ遷移します。')
-            console.error(response)
+            status.value = 'error'
             setTimeout(() => {
               window.location.href = 'https://admin.furien.jp/users/sign_in/'
             }, 3000)
@@ -151,11 +143,7 @@ async function postData() {
       reader.readAsDataURL(files[i])
     }
   } catch (err) {
-    loading.value = false
-    errors.value.push('サーバーエラーが発生しました。')
-    errors.value.push('お手数ですが、マイページからのアップロードをお願いいたします。')
-    errors.value.push('自動でログイン画面へ遷移します。')
-    console.error(err)
+    status.value = 'error'
     setTimeout(() => {
       window.location.href = 'https://admin.furien.jp/users/sign_in/'
     }, 3000)
@@ -165,48 +153,54 @@ async function postData() {
 
 <template>
   <form @submit.prevent="submitForm">
-    <!-- messageをコンポーネントに分けたい -->
-    <div v-if="success">{{ success }}</div>
-    <ul v-if="errors">
-      <li v-for="(error, key) in errors" v-bind:key="key">
-        {{ error }}
-      </li>
-    </ul>
-    <div v-if="loading">送信中...</div>
-    <!-- messageをコンポーネントに分けたい -->
+    <div v-if="status === 'ready'">
+      <ul>
+        <li v-for="(filename, key) in filenames" v-bind:key="key">
+          {{ filename }}
+        </li>
+      </ul>
 
-    <div class="dropzone">
-      <div
-        class="dropzone__inner"
-        :class="isDraggingOver ? 'isDraggingOver' : ''"
-        @dragover.prevent
-        @drop.prevent
-        @dragenter="dragEnter"
-        @dragleave="dragLeave"
-        @drop="handleFiles"
-      >
-        <p>ファイルをここに<br class="sm" />ドラッグ＆ドロップ</p>
-        <p>または</p>
-        <button type="button" @click="openFileDialog">ファイルを選択</button>
+      <div class="dropzone">
+        <div
+          class="dropzone__inner"
+          :class="isDraggingOver ? 'isDraggingOver' : ''"
+          @dragover.prevent
+          @drop.prevent
+          @dragenter="dragEnter"
+          @dragleave="dragLeave"
+          @drop="handleFiles"
+        >
+          <p>ファイルをここに<br class="sm" />ドラッグ＆ドロップ</p>
+          <p>または</p>
+          <button type="button" @click="openFileDialog">ファイルを選択</button>
+        </div>
+      </div>
+
+      <input
+        @change="handleFiles"
+        id="fileInput"
+        ref="fileInput"
+        type="file"
+        accept=".pdf,.xls,.xlsx,.doc,.docx"
+        multiple
+      />
+      <div class="submit">
+        <button type="submit">送信する</button>
       </div>
     </div>
+    <div v-else-if="status === 'sending'">
+      <h2>送信中...</h2>
+    </div>
+    <div v-else-if="status === 'success'">
+      <h2>送信が完了しました。</h2>
+    </div>
+    <div v-else-if="status === 'error'">
+      <h2>サーバーエラーが発生しました。</h2>
 
-    <ul>
-      <li v-for="(filename, key) in filenames" v-bind:key="key">
-        {{ filename }}
-      </li>
-    </ul>
-
-    <input
-      @change="handleFiles"
-      id="fileInput"
-      ref="fileInput"
-      type="file"
-      accept=".pdf,.xls,.xlsx,.doc,.docx"
-      multiple
-    />
-    <div class="submit">
-      <button type="submit" :disabled="loading">送信する</button>
+      <p>
+        お手数ですが、マイページからのアップロードをお願いいたします。
+        自動でログイン画面へ遷移します。
+      </p>
     </div>
   </form>
 </template>
@@ -272,7 +266,12 @@ async function postData() {
 }
 
 .submit {
+  margin: 2rem 0;
   text-align: center;
+
+  &__disable {
+    opacity: 0.5;
+  }
 
   button {
     color: #fff !important;
