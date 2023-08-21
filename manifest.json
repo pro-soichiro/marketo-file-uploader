@@ -1,0 +1,21 @@
+{
+  "index.css": {
+    "file": "assets/index-a1ad8d87.css",
+    "src": "index.css"
+  },
+  "index.html": {
+    "assets": [
+      "assets/logo-3a00fc8f.svg"
+    ],
+    "css": [
+      "assets/index-a1ad8d87.css"
+    ],
+    "file": "assets/index-43d391e7.js",
+    "isEntry": true,
+    "src": "index.html"
+  },
+  "src/assets/img/logo.svg": {
+    "file": "assets/logo-3a00fc8f.svg",
+    "src": "src/assets/img/logo.svg"
+  }
+}
