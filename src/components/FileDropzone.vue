@@ -106,7 +106,6 @@ async function postData() {
         processedFiles++
 
         if (processedFiles === files.length) {
-          console.log(totalfilesize)
           const response = await Email.send({
             SecureToken: '99fe4c28-48bf-4027-b9f2-a5cd421bcc82',
             To: 'soichiro.mamiya@anconsulting.jp',
