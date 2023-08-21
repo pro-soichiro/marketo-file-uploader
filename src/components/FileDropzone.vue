@@ -84,7 +84,7 @@ async function postData() {
   const email = document.getElementById('Email').value
 
   try {
-    let files = fileInput.value.files
+    let files = data.value.files
     let processedFiles = 0
     let attachments = []
     let totalfilesize = 0
