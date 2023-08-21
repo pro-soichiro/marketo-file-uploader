@@ -11,10 +11,14 @@ import FileDropzone from './components/FileDropzone.vue'
   </main>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 h1 {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 500;
   text-align: center;
+
+  @media screen and (min-width: 600px) {
+    font-size: 2rem;
+  }
 }
 </style>
