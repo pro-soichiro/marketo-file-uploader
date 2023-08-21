@@ -122,6 +122,7 @@ async function postData() {
           })
           if (response == 'OK') {
             success.value = '送信完了'
+            console.log('successsssssss!!!')
           } else {
             errors.value.push('エラーがあります。')
             errors.value.push(response)
