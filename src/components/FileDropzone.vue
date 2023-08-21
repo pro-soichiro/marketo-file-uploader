@@ -139,10 +139,6 @@ async function postData() {
 </script>
 
 <template>
-  <!-- <img class="furien-logo" src="@/assets/img/logo.svg" alt="furien" /> -->
-  <div class="furien-logo-wrapper">
-    <img class="furien-logo" src="@/assets/img/logo.svg" alt="furien" />
-  </div>
   <form ref="form" enctype="multipart/form-data" method="post" @submit.prevent="submitForm">
     <div style="text-align: center">{{ endpoint }}</div>
     <div v-if="success">{{ success }}</div>
@@ -191,17 +187,9 @@ async function postData() {
 </template>
 
 <style lang="scss" scoped>
-.furien-logo-wrapper {
-  text-align: center;
-}
-.furien-logo {
-  width: 200px;
-}
 .dropzone-wrapper {
   background-color: rgba(28, 39, 51, 0.07);
   padding: 24px;
-  max-width: 600px;
-  margin: 0 auto;
 }
 .dropzone {
   max-width: 600px;
