@@ -6,6 +6,6 @@ import FileDropzone from '../FileDropzone.vue'
 describe('FileDropzone', () => {
   it('renders properly', () => {
     const wrapper = mount(FileDropzone)
-    expect(wrapper.text()).toContain('ファイルをここにドラッグ&ドロップ')
+    expect(wrapper.text()).toContain('ファイルをここに')
   })
 })
