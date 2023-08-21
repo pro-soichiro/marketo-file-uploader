@@ -20,20 +20,30 @@ const loading = ref(false)
 
 const fileInput = ref(null)
 
+let dragCounter = 0;
+
 function openFileDialog() {
   fileInput.value?.click()
 }
 
 function dragEnter() {
-  isDraggingOver.value = true
+  dragCounter++;
+  if (dragCounter === 1) {
+    isDraggingOver.value = true;
+  }
 }
 
 function dragLeave() {
-  isDraggingOver.value = false
+  dragCounter--;
+  if (dragCounter === 0) {
+    isDraggingOver.value = false;
+  }
 }
 
 function handleFiles(event) {
-  isDraggingOver.value = false
+  dragCounter = 0;
+  isDraggingOver.value = false;
+
   const files =
     event.type === 'change' ? Array.from(event.target.files) : Array.from(event.dataTransfer.files)
 
@@ -175,7 +185,7 @@ async function postData() {
         @dragleave="dragLeave"
         @drop="handleFiles"
       >
-        <p>ここにファイルを<br class="sm" />ドラッグ&ドロップして下さい</p>
+        <p>ファイルをここに<br class="sm" />ドラッグ＆ドロップ</p>
         <p>または</p>
         <button type="button" @click="openFileDialog">ファイルを選択</button>
       </div>
@@ -217,18 +227,19 @@ async function postData() {
     text-align: center;
 
     p {
-      margin: .2rem 0;
+      margin: 0.2rem 0;
 
       font-size: 0.8rem;
 
       @media screen and (min-width: 600px) {
         font-size: 1.2rem;
       }
+      overflow-wrap: break-word;
     }
 
     button {
-      margin-top: .2rem;
-      padding: .4rem .8rem;
+      margin-top: 0.2rem;
+      padding: 0.4rem 0.8rem;
       background-color: #fff;
       color: #323232;
       border: 1px solid #dcdcdc;
