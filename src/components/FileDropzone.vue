@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import {
+  MAX_FILE_COUNT,
+  MAX_FILE_SIZE_MB,
+  ALLOWED_EXTENSIONS,
   isValidFileCount,
   isValidExtension,
   isValidSize,
@@ -10,7 +13,7 @@ import {
 const isDraggingOver = ref(false)
 const data = ref({ files: [] })
 const filenames = ref([])
-const error = ref([])
+const errors = ref([])
 const loading = ref(false)
 
 const fileInput = ref(null)
@@ -34,12 +37,17 @@ function handleFiles(event) {
 
   for (const file of files) {
     if (!isValidExtension(file.name)) {
-      alert(`許可されていないファイル形式です: ${file.name}`)
+      alert(
+        `許可されていないファイル形式です: ${file.name
+          .split('.')
+          .pop()
+          .toLowerCase()} \n(許可しているファイル形式: ${ALLOWED_EXTENSIONS.join(',')})`
+      )
       return
     }
 
     if (!isValidSize(file.size)) {
-      alert('ファイルサイズの最大値は3MBまでです。')
+      alert(`ファイルサイズの最大値は${MAX_FILE_SIZE_MB}MBまでです。`)
       return
     }
 
@@ -49,8 +57,8 @@ function handleFiles(event) {
     }
   }
 
-  if (isValidFileCount(files.length, data.value.files.length)) {
-    alert('最大添付数は3ファイルまでです。')
+  if (!isValidFileCount(files.length, data.value.files.length)) {
+    alert(`最大添付数は${MAX_FILE_COUNT}ファイルまでです。`)
     return
   }
 
@@ -69,29 +77,62 @@ async function submitForm() {
 }
 const success = ref(null)
 
-const endpoint = ref('https://pre-admin.furien.jp/api/marketo')
-const ENDPOINT = 'https://pre-admin.furien.jp/api/marketo'
-// const endpoint = ref('http://localhost:3000/api/marketo')
-// const ENDPOINT = 'http://localhost:3000/api/marketo'
-
 async function postData() {
-  const formData = new FormData()
-  formData.append('marketo[mktoId]', document.getElementById('mktoId').value)
-  formData.append('marketo[email]', document.getElementById('Email').value)
-  data.value.files.forEach((file) => formData.append('marketo[files][]', file))
+  loading.value = true
+  errors.value = []
+  const mktoId = document.getElementById('mktoId').value
+  const email = document.getElementById('Email').value
 
   try {
-    const response = await fetch(ENDPOINT, {
-      method: 'POST',
-      body: formData
-    })
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+    let files = fileInput.value.files
+    let processedFiles = 0
+    let attachments = []
+    let totalfilesize = 0
+    let totalfilename = []
+
+    for (let i = 0; i < files.length; i++) {
+      let reader = new FileReader()
+
+      reader.onload = async function (e) {
+        const base64File = e.target.result.split(',')[1]
+        attachments.push({
+          name: files[i].name,
+          data: base64File
+        })
+        totalfilename.push(files[i].name)
+
+        totalfilesize += base64File.length
+
+        processedFiles++
+
+        if (processedFiles === files.length) {
+          console.log(totalfilesize)
+          const response = await Email.send({
+            SecureToken: '99fe4c28-48bf-4027-b9f2-a5cd421bcc82',
+            To: 'soichiro.mamiya@anconsulting.jp',
+            From: 'soichiro.mamiya@anconsulting.jp',
+            Subject: '【Marketo】経歴書アップロード通知',
+            Body: `■ファイルのアップロードがありました。<br><br>
+              Marketo ID:<br>${mktoId}<br><br>
+              Email:<br>${email}<br><br>
+              ファイルサイズ:<br>${totalfilesize / 1024 / 1024} MB<br><br>
+              経歴書:<br>${totalfilename.join('<br>')}
+            `,
+            Attachments: attachments
+          })
+          if (response == 'OK') {
+            success.value = '送信完了'
+          } else {
+            errors.value.push('エラーがあります。')
+            errors.value.push(response)
+          }
+        }
+      }
+
+      reader.readAsDataURL(files[i])
     }
-    console.info('送信完了')
-    success.value = '送信完了'
   } catch (err) {
-    error.value = err.message
+    errors.value = err.message
   } finally {
     loading.value = false
   }
@@ -99,27 +140,36 @@ async function postData() {
 </script>
 
 <template>
-  <form @submit.prevent="submitForm">
-    <div>{{ endpoint }}</div>
-    <div>{{ isDraggingOver }}</div>
+  <!-- <img class="furien-logo" src="@/assets/img/logo.svg" alt="furien" /> -->
+  <div class="furien-logo-wrapper">
+    <img class="furien-logo" src="@/assets/img/logo.svg" alt="furien" />
+  </div>
+  <form ref="form" enctype="multipart/form-data" method="post" @submit.prevent="submitForm">
+    <div style="text-align: center">{{ endpoint }}</div>
     <div v-if="success">{{ success }}</div>
-    <div v-if="error">{{ error }}</div>
+    <ul v-if="errors">
+      <li v-for="(error, key) in errors" v-bind:key="key">
+        {{ error }}
+      </li>
+    </ul>
     <div v-if="loading">送信中...</div>
 
-    <div
-      class="dropzone"
-      :class="isDraggingOver ? 'isDraggingOver' : ''"
-      @dragover.prevent
-      @drop.prevent
-      @dragenter="dragEnter"
-      @dragleave="dragLeave"
-      @drop="handleFiles"
-    >
-      ここにファイルをドラッグ&ドロップして下さい
-      <br />
-      または
-      <br />
-      <button type="button" @click="openFileDialog">ファイルを選択</button>
+    <div class="dropzone-wrapper">
+      <div
+        class="dropzone"
+        :class="isDraggingOver ? 'isDraggingOver' : ''"
+        @dragover.prevent
+        @drop.prevent
+        @dragenter="dragEnter"
+        @dragleave="dragLeave"
+        @drop="handleFiles"
+      >
+        ここにファイルをドラッグ&ドロップして下さい
+        <br />
+        または
+        <br />
+        <button type="button" @click="openFileDialog">ファイルを選択</button>
+      </div>
     </div>
 
     <ul>
@@ -135,13 +185,27 @@ async function postData() {
       accept=".pdf,.xls,.xlsx,.doc,.docx"
       multiple
     />
-    <button type="submit" class="submit">送信する</button>
+    <div class="submit-wrapper">
+      <button type="submit" class="submit">送信する</button>
+    </div>
   </form>
 </template>
 
 <style lang="scss" scoped>
+.furien-logo-wrapper {
+  text-align: center;
+}
+.furien-logo {
+  width: 200px;
+}
+.dropzone-wrapper {
+  background-color: rgba(28, 39, 51, 0.07);
+  padding: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
 .dropzone {
-  width: 400px;
+  max-width: 600px;
   height: 200px;
   border: 3px dashed gray;
   display: flex;
@@ -157,5 +221,32 @@ async function postData() {
 
 #fileInput {
   display: none;
+}
+
+.submit-wrapper {
+  text-align: center;
+}
+.submit {
+  color: #fff !important;
+  background-color: #0e5fb1 !important;
+  border: none;
+  user-select: none;
+  padding: 0.84rem 2.14rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.125rem;
+
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  box-shadow:
+    0 2px 5px 0 rgba(0, 0, 0, 0.16),
+    0 2px 10px 0 rgba(0, 0, 0, 0.12);
+
+  &:hover {
+    box-shadow:
+      0 5px 11px 0 rgba(0, 0, 0, 0.18),
+      0 4px 15px 0 rgba(0, 0, 0, 0.15);
+    transition: all 0.15s ease-in-out;
+  }
 }
 </style>
