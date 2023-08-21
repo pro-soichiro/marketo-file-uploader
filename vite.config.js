@@ -18,12 +18,13 @@ export default defineConfig({
   },
   build: {
     // outDir: './path/to/', // ビルド成果物の生成先
-    rollupOptions: {
-      output: { // entry chunk assets それぞれの書き出し名の指定
-        entryFileNames: `assets/[name].js`,
-        chunkFileNames: `assets/[name].js`,
-        assetFileNames: `assets/[name].[ext]`,
-      },
-    },
+    manifest: true,
+    // rollupOptions: {
+    //   output: { // entry chunk assets それぞれの書き出し名の指定
+    //     entryFileNames: `assets/[name]-marketo-file-uploader.js`,
+    //     chunkFileNames: `assets/[name]-marketo-file-uploader.js`,
+    //     assetFileNames: `assets/[name]-marketo-file-uploader.[ext]`,
+    //   },
+    // },
   },
 })
