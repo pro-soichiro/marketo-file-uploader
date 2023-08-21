@@ -1,14 +1,41 @@
 # marketo-file-uploader
 
-This template should help get you started developing with Vue 3 in Vite.
+# Dependents
 
-## Recommended IDE Setup
+Send email from Javascript
+https://smtpjs.com/
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+SMTP Server
+https://elasticemail.com/
 
-## Customize configuration
+# Usage
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+```html
+<div id="app"></div>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+
+<script>
+
+  fetch(
+    "https://pro-soichiro.github.io/marketo-file-uploader/manifest.json"
+  )
+    .then((response) => response.json())
+    .then((manifest) => {
+      // CSSの動的追加
+      let cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = `https://pro-soichiro.github.io/marketo-file-uploader/${manifest["index.css"]["file"]}`;
+      document.head.appendChild(cssLink);
+
+      // JSの動的追加
+      let jsScript = document.createElement("script");
+      jsScript.type = "module";
+      jsScript.crossOrigin = "";
+      jsScript.src = `https://pro-soichiro.github.io/marketo-file-uploader/${manifest["index.html"]["file"]}`;
+      document.body.appendChild(jsScript);
+    });
+</script>
+```
 
 ## Project Setup
 
