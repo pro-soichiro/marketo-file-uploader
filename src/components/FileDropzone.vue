@@ -123,7 +123,8 @@ async function postData() {
           if (response == 'OK') {
             success.value = '送信完了しました。'
             setTimeout(() => {
-              window.location.href = 'http://localhost:5173'
+              // window.location.href = 'http://localhost:5173'
+              location.reload()
             }, 2000)
           } else {
             errors.value.push('サーバーエラーが発生しました。')
