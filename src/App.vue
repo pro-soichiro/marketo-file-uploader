@@ -6,7 +6,15 @@ import FileDropzone from './components/FileDropzone.vue'
 <template>
   <main>
     <TheHeader />
+    <h1>経歴書アップロード</h1>
     <FileDropzone />
   </main>
 </template>
 
+<style scoped>
+h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  text-align: center;
+}
+</style>
