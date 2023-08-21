@@ -155,6 +155,7 @@ async function postData() {
 
 <template>
   <form @submit.prevent="submitForm">
+    <!-- messageをコンポーネントに分けたい -->
     <div v-if="success">{{ success }}</div>
     <ul v-if="errors">
       <li v-for="(error, key) in errors" v-bind:key="key">
@@ -162,10 +163,11 @@ async function postData() {
       </li>
     </ul>
     <div v-if="loading">送信中...</div>
+    <!-- messageをコンポーネントに分けたい -->
 
-    <div class="dropzone-wrapper">
+    <div class="dropzone">
       <div
-        class="dropzone"
+        class="dropzone__inner"
         :class="isDraggingOver ? 'isDraggingOver' : ''"
         @dragover.prevent
         @drop.prevent
@@ -173,10 +175,8 @@ async function postData() {
         @dragleave="dragLeave"
         @drop="handleFiles"
       >
-        ここにファイルをドラッグ&ドロップして下さい
-        <br />
-        または
-        <br />
+        <p>ここにファイルを<br class="sm" />ドラッグ&ドロップして下さい</p>
+        <p>または</p>
         <button type="button" @click="openFileDialog">ファイルを選択</button>
       </div>
     </div>
@@ -186,6 +186,7 @@ async function postData() {
         {{ filename }}
       </li>
     </ul>
+
     <input
       @change="handleFiles"
       id="fileInput"
@@ -194,29 +195,64 @@ async function postData() {
       accept=".pdf,.xls,.xlsx,.doc,.docx"
       multiple
     />
-    <div class="submit-wrapper">
-      <button type="submit" class="submit">送信する</button>
+    <div class="submit">
+      <button type="submit" :disabled="loading">送信する</button>
     </div>
   </form>
 </template>
 
 <style lang="scss" scoped>
-.dropzone-wrapper {
+.dropzone {
   background-color: rgba(28, 39, 51, 0.07);
   padding: 24px;
-}
-.dropzone {
-  max-width: 600px;
-  height: 200px;
-  border: 3px dashed gray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: center;
 
-  &.isDraggingOver {
-    background-color: lightgray;
+  &__inner {
+    max-width: 600px;
+    height: 200px;
+    border: 3px dashed gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+
+    p {
+      margin: .2rem 0;
+
+      font-size: 0.8rem;
+
+      @media screen and (min-width: 600px) {
+        font-size: 1.2rem;
+      }
+    }
+
+    button {
+      margin-top: .2rem;
+      padding: .4rem .8rem;
+      background-color: #fff;
+      color: #323232;
+      border: 1px solid #dcdcdc;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.8rem;
+
+      @media screen and (min-width: 600px) {
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+      }
+    }
+
+    &.isDraggingOver {
+      background-color: lightgray;
+    }
+  }
+}
+
+.sm {
+  display: block;
+
+  @media screen and (min-width: 600px) {
+    display: none;
   }
 }
 
@@ -224,30 +260,31 @@ async function postData() {
   display: none;
 }
 
-.submit-wrapper {
-  text-align: center;
-}
 .submit {
-  color: #fff !important;
-  background-color: #0e5fb1 !important;
-  border: none;
-  user-select: none;
-  padding: 0.84rem 2.14rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  border-radius: 0.125rem;
+  text-align: center;
 
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
-  box-shadow:
-    0 2px 5px 0 rgba(0, 0, 0, 0.16),
-    0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  button {
+    color: #fff !important;
+    background-color: #0e5fb1 !important;
+    border: none;
+    user-select: none;
+    padding: 0.84rem 2.14rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.125rem;
 
-  &:hover {
-    box-shadow:
-      0 5px 11px 0 rgba(0, 0, 0, 0.18),
-      0 4px 15px 0 rgba(0, 0, 0, 0.15);
+    cursor: pointer;
     transition: all 0.15s ease-in-out;
+    box-shadow:
+      0 2px 5px 0 rgba(0, 0, 0, 0.16),
+      0 2px 10px 0 rgba(0, 0, 0, 0.12);
+
+    &:hover {
+      box-shadow:
+        0 5px 11px 0 rgba(0, 0, 0, 0.18),
+        0 4px 15px 0 rgba(0, 0, 0, 0.15);
+      transition: all 0.15s ease-in-out;
+    }
   }
 }
 </style>
