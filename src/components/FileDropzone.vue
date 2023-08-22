@@ -188,15 +188,15 @@ async function postData() {
         <button type="submit">送信する</button>
       </div>
     </div>
-    <div v-else-if="status === 'sending'">
+    <div class="sending" v-else-if="status === 'sending'">
       <h2>送信中...</h2>
+      <div class="loader"></div>
     </div>
-    <div v-else-if="status === 'success'">
+    <div class="success" v-else-if="status === 'success'">
       <h2>送信が完了しました。</h2>
     </div>
-    <div v-else-if="status === 'error'">
+    <div class="error" v-else-if="status === 'error'">
       <h2>サーバーエラーが発生しました。</h2>
-
       <p>
         お手数ですが、マイページからのアップロードをお願いいたします。
         自動でログイン画面へ遷移します。
@@ -206,6 +206,15 @@ async function postData() {
 </template>
 
 <style lang="scss" scoped>
+h2 {
+  font-size: 1.2rem;
+  text-align: center;
+
+  @media screen and (min-width: 600px) {
+    font-size: 1.6rem;
+  }
+}
+
 .dropzone {
   background-color: rgba(28, 39, 51, 0.07);
   padding: 24px;
@@ -296,5 +305,215 @@ async function postData() {
       transition: all 0.15s ease-in-out;
     }
   }
+}
+
+.loader {
+  margin: 100px auto;
+  font-size: 25px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  -webkit-animation: load 1.1s infinite ease;
+  animation: load 1.1s infinite ease;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+@-webkit-keyframes load {
+  0%,
+  100% {
+    box-shadow:
+      0em -2.6em 0em 0em #0e5fb1,
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.5),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.7);
+  }
+  12.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.7),
+      1.8em -1.8em 0 0em #0e5fb1,
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.5);
+  }
+  25% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.5),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.7),
+      2.5em 0em 0 0em #0e5fb1,
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  37.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.5),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.7),
+      1.75em 1.75em 0 0em #0e5fb1,
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  50% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.5),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.7),
+      0em 2.5em 0 0em #0e5fb1,
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  62.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.5),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.7),
+      -1.8em 1.8em 0 0em #0e5fb1,
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  75% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.5),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.7),
+      -2.6em 0em 0 0em #0e5fb1,
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  87.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.5),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.7),
+      -1.8em -1.8em 0 0em #0e5fb1;
+  }
+}
+@keyframes load {
+  0%,
+  100% {
+    box-shadow:
+      0em -2.6em 0em 0em #0e5fb1,
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.5),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.7);
+  }
+  12.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.7),
+      1.8em -1.8em 0 0em #0e5fb1,
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.5);
+  }
+  25% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.5),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.7),
+      2.5em 0em 0 0em #0e5fb1,
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  37.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.5),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.7),
+      1.75em 1.75em 0 0em #0e5fb1,
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  50% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.5),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.7),
+      0em 2.5em 0 0em #0e5fb1,
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.2),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  62.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.5),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.7),
+      -1.8em 1.8em 0 0em #0e5fb1,
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  75% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.5),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.7),
+      -2.6em 0em 0 0em #0e5fb1,
+      -1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2);
+  }
+  87.5% {
+    box-shadow:
+      0em -2.6em 0em 0em rgba(14, 95, 177, 0.2),
+      1.8em -1.8em 0 0em rgba(14, 95, 177, 0.2),
+      2.5em 0em 0 0em rgba(14, 95, 177, 0.2),
+      1.75em 1.75em 0 0em rgba(14, 95, 177, 0.2),
+      0em 2.5em 0 0em rgba(14, 95, 177, 0.2),
+      -1.8em 1.8em 0 0em rgba(14, 95, 177, 0.5),
+      -2.6em 0em 0 0em rgba(14, 95, 177, 0.7),
+      -1.8em -1.8em 0 0em #0e5fb1;
+  }
+}
+
+.sending {
+  color: #0e5fb1;
+  text-align: center;
+}
+.success {
+  color: #198754;
+  text-align: center;
+}
+.error {
+  color: #dc3545;
+  text-align: center;
 }
 </style>
