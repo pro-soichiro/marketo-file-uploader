@@ -1,8 +1,18 @@
+<script>
+fetch('https://pro-soichiro.github.io/marketo-file-uploader/manifest.json')
+  .then((response) => response.json())
+  .then((manifest) => {
+    let img = document.createElement('img')
+    img.alt = 'furien'
+    img.style.height = '2.4rem'
+    img.src = `https://pro-soichiro.github.io/marketo-file-uploader/${manifest['src/assets/img/logo.svg']['file']}`
+    document.getElementById('headerLogo').appendChild(img)
+  })
+</script>
+
 <template>
   <header class="header">
-    <div class="header__logo">
-      <img class="pc-logo" src="@/assets/img/logo.svg" alt="furien" />
-    </div>
+    <div id="headerLogo" class="header__logo"></div>
   </header>
 </template>
 
@@ -12,10 +22,6 @@
 
   &__logo {
     text-align: center;
-
-    img {
-      height: 2.4rem;
-    }
   }
 }
 </style>
