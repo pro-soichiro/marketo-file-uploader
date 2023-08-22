@@ -107,9 +107,9 @@ async function postData() {
         processedFiles++
 
         if (processedFiles === data.value.length) {
+          // eslint-disable-next-line no-undef
           const response = await Email.send({
             SecureToken: '99fe4c28-48bf-4027-b9f2-a5cd421bcc82',
-            // SecureToken: 'fail secure token',
             To: 'soichiro.mamiya@anconsulting.jp',
             From: 'soichiro.mamiya@anconsulting.jp',
             Subject: '【Marketo】経歴書アップロード通知',
@@ -125,7 +125,7 @@ async function postData() {
             setTimeout(() => {
               // window.location.href = 'http://localhost:5173'
               location.reload()
-            }, 2000)
+            }, 3000)
           } else {
             status.value = 'error'
             setTimeout(() => {
