@@ -13,6 +13,7 @@ fetch('https://pro-soichiro.github.io/marketo-file-uploader/manifest.json')
 <template>
   <header class="header">
     <div id="headerLogo" class="header__logo"></div>
+    <img src="@/assets/img/logo.svg" alt="" style="display: none;">
   </header>
 </template>
 
