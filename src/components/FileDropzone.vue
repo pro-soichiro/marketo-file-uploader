@@ -11,8 +11,7 @@ import {
 } from '@/utils/validation'
 
 const isDraggingOver = ref(false)
-const data = ref({ files: [] })
-const filenames = ref([])
+const data = ref([])
 
 const status = ref('ready')
 
@@ -20,10 +19,12 @@ const fileInput = ref(null)
 
 let dragCounter = 0
 
+// ファイルダイアログを開く
 function openFileDialog() {
   fileInput.value?.click()
 }
 
+// ドラッグゾーンに入った時の処理
 function dragEnter() {
   dragCounter++
   if (dragCounter === 1) {
@@ -31,6 +32,7 @@ function dragEnter() {
   }
 }
 
+// ドラッグゾーンからでた時の処理
 function dragLeave() {
   dragCounter--
   if (dragCounter === 0) {
@@ -38,6 +40,9 @@ function dragLeave() {
   }
 }
 
+// ファイルを添付されたタイミングで実行される処理
+// - バリデーション
+// - dataへの格納
 function handleFiles(event) {
   dragCounter = 0
   isDraggingOver.value = false
@@ -67,19 +72,19 @@ function handleFiles(event) {
     }
   }
 
-  if (!isValidFileCount(files.length, data.value.files.length)) {
+  if (!isValidFileCount(files.length, data.value.length)) {
     alert(`最大添付数は${MAX_FILE_COUNT}ファイルまでです。`)
     return
   }
 
   files.forEach((file) => {
-    data.value.files.push(file)
-    filenames.value.push(file.name)
+    data.value.push({ file: file, filename: file.name })
   })
 }
 
+// 送信ボタンクリック時の処理
 async function submitForm() {
-  if (data.value.files.length <= 0) {
+  if (data.value.length <= 0) {
     alert('ファイルを選択してください。')
     return
   }
@@ -88,30 +93,28 @@ async function submitForm() {
   await postData()
 }
 
+// 送信処理
 async function postData() {
   const mktoId = document.getElementById('mktoId').value
   const email = document.getElementById('Email').value
 
   try {
-    let files = data.value.files
     let processedFiles = 0
     let attachments = []
-    let totalfilename = []
 
-    for (let i = 0; i < files.length; i++) {
+    for (let i = 0; i < data.value.length; i++) {
       let reader = new FileReader()
 
       reader.onload = async function (e) {
         const base64File = e.target.result.split(',')[1]
         attachments.push({
-          name: files[i].name,
+          name: data.value[i].filename,
           data: base64File
         })
-        totalfilename.push(files[i].name)
 
         processedFiles++
 
-        if (processedFiles === files.length) {
+        if (processedFiles === data.value.length) {
           const response = await Email.send({
             SecureToken: '99fe4c28-48bf-4027-b9f2-a5cd421bcc82',
             // SecureToken: 'fail secure token',
@@ -121,7 +124,7 @@ async function postData() {
             Body: `■ファイルのアップロードがありました。<br><br>
               Marketo ID:<br>${mktoId}<br><br>
               Email:<br>${email}<br><br>
-              経歴書:<br>${totalfilename.join('<br>')}
+              経歴書:<br>${data.value.map((file) => file.filename).join('<br>')}
             `,
             Attachments: attachments
           })
@@ -140,7 +143,7 @@ async function postData() {
         }
       }
 
-      reader.readAsDataURL(files[i])
+      reader.readAsDataURL(data.value[i].file)
     }
   } catch (err) {
     status.value = 'error'
@@ -149,13 +152,18 @@ async function postData() {
     }, 3000)
   }
 }
+
+function removeFile(index) {
+  data.value.splice(index, 1)
+}
 </script>
 
 <template>
   <form @submit.prevent="submitForm">
     <div v-if="status === 'ready'">
-      <ul class="filenames">
-        <li v-for="(filename, key) in filenames" v-bind:key="key">
+      <ul class="filename__ul">
+        <li class="filename__li" v-for="({ filename }, index) in data" v-bind:key="index">
+          <button type="button" @click="removeFile(index)">削除</button>
           {{ filename }}
         </li>
       </ul>
@@ -215,9 +223,37 @@ h2 {
   }
 }
 
-.filenames {
-  white-space: nowrap;
-  overflow: scroll;
+.filename {
+  &__ul {
+    padding: 1rem;
+    white-space: nowrap;
+    overflow: scroll;
+    list-style: none;
+  }
+  &__li {
+    margin: 0.4rem 0;
+
+    button {
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.125rem;
+      color: #fff;
+      background-color: #dc3545;
+      border: none;
+      cursor: pointer;
+
+      transition: all 0.15s ease-in-out;
+      box-shadow:
+        0 2px 5px 0 rgba(0, 0, 0, 0.16),
+        0 2px 10px 0 rgba(0, 0, 0, 0.12);
+
+      &:hover {
+        box-shadow:
+          0 5px 11px 0 rgba(0, 0, 0, 0.18),
+          0 4px 15px 0 rgba(0, 0, 0, 0.15);
+        transition: all 0.15s ease-in-out;
+      }
+    }
+  }
 }
 
 .dropzone {
