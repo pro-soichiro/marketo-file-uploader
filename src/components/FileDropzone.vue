@@ -89,6 +89,7 @@ async function submitForm() {
 async function postData() {
   const mktoId = document.getElementById('mktoId').value
   const email = document.getElementById('Email').value
+  console.log('埋め込み側', this, email)
 
   try {
     let processedFiles = 0
