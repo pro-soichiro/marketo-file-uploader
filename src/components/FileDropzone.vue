@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import {
   MAX_FILE_COUNT,
   MAX_FILE_SIZE_MB,
@@ -75,11 +75,11 @@ function handleFiles(event) {
     data.value.push({ file: file, filename: file.name })
   })
 }
-onMounted(() => {
-  const email = document.getElementById('Email')?.value
-  // eslint-disable-next-line no-undef
-  console.log('埋め込み側', this, email, test_email)
-})
+// onMounted(() => {
+//   const email = document.getElementById('Email')?.value
+//   // eslint-disable-next-line no-undef
+//   console.log('埋め込み側', this, email, test_email)
+// })
 
 async function submitForm() {
   if (data.value.length <= 0) {
@@ -92,9 +92,9 @@ async function submitForm() {
 }
 
 async function postData() {
-  const mktoId = document.getElementById('mktoId').value
-  const email = window.document.getElementById('Email').value
-  console.log('埋め込み側', this, email)
+  // const mktoId = document.getElementById('mktoId').value
+  // const email = window.document.getElementById('Email').value
+  // console.log('埋め込み側', this, email)
 
   try {
     let processedFiles = 0
