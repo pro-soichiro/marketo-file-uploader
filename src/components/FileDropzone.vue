@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import {
   MAX_FILE_COUNT,
   MAX_FILE_SIZE_MB,
@@ -74,10 +74,11 @@ function handleFiles(event) {
   files.forEach((file) => {
     data.value.push({ file: file, filename: file.name })
   })
-
+}
+onMounted(() => {
   const email = document.getElementById('Email')?.value
   console.log('埋め込み側', this, email)
-}
+})
 
 async function submitForm() {
   if (data.value.length <= 0) {
