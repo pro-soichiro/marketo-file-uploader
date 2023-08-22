@@ -15,7 +15,7 @@
 <template>
   <header class="header">
     <div id="headerLogo" class="header__logo">
-      <img src="/logo.svg" alt="furien" />
+      <img src="https://pro-soichiro.github.io/marketo-file-uploader/logo.svg" alt="furien" />
     </div>
   </header>
 </template>
