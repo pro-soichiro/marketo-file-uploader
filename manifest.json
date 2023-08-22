@@ -1,21 +1,14 @@
 {
   "index.css": {
-    "file": "assets/index-b72e437d.css",
+    "file": "assets/index-6642084f.css",
     "src": "index.css"
   },
   "index.html": {
-    "assets": [
-      "assets/logo-3a00fc8f.svg"
-    ],
     "css": [
-      "assets/index-b72e437d.css"
+      "assets/index-6642084f.css"
     ],
-    "file": "assets/index-3d577304.js",
+    "file": "assets/index-cc57e461.js",
     "isEntry": true,
     "src": "index.html"
-  },
-  "src/assets/img/logo.svg": {
-    "file": "assets/logo-3a00fc8f.svg",
-    "src": "src/assets/img/logo.svg"
   }
 }
