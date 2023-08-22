@@ -77,7 +77,8 @@ function handleFiles(event) {
 }
 onMounted(() => {
   const email = document.getElementById('Email')?.value
-  console.log('埋め込み側', this, email)
+  // eslint-disable-next-line no-undef
+  console.log('埋め込み側', this, email, test_email)
 })
 
 async function submitForm() {
