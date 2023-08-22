@@ -9,15 +9,6 @@ describe('FileDropzone', () => {
     expect(wrapper.text()).toContain('ファイルをここにドラッグ＆ドロップまたはファイルを選択')
   })
 
-  // describe('openFileDialog', () => {
-  //   it('hoge hoge', async () => {
-  //     // const wrapper = mount(FileDropzone)
-
-  //     // await wrapper.vm.openFileDialog()
-  //     // expect(wrapper.vm.isDraggingOver).toBe(true)
-  //   })
-  // })
-
   describe('dragEnter', () => {
     it('dragEnterが呼び出されるとisDraggingOverの状態が変わること', async () => {
       const wrapper = mount(FileDropzone)
@@ -105,36 +96,36 @@ describe('FileDropzone', () => {
       alertMock.mockRestore()
     })
 
-    // it('ファイルサイズが3MB以下の場合アラートは出ないこと', async () => {
-    //   const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {})
-    //   const wrapper = mount(FileDropzone)
+    it('ファイルサイズが3MB以下の場合アラートは出ないこと', async () => {
+      const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {})
+      const wrapper = mount(FileDropzone)
 
-    //   const dataSize = 2 * 1024 * 1024
-    //   const dummyData = new Array(dataSize).fill('a')
+      // 3145728バイト(3MBのファイル)
+      const dataSize = 3 * 1024 * 1024 + 1
+      const dummyData = new Array(dataSize).join('a')
+      const mockChangeEvent = {
+        type: 'change',
+        target: {
+          files: [
+            new File([dummyData], 'sample.xlsx', {
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            })
+          ]
+        }
+      }
 
-    //   const mockChangeEvent = {
-    //     type: 'change',
-    //     target: {
-    //       files: [
-    //         new File([dummyData], 'sample.xlsx', {
-    //           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    //         })
-    //       ]
-    //     }
-    //   }
-
-    //   await wrapper.vm.handleFiles(mockChangeEvent)
-    //   expect(alertMock).not.toHaveBeenCalled()
-    //   alertMock.mockRestore()
-    // })
+      await wrapper.vm.handleFiles(mockChangeEvent)
+      expect(alertMock).not.toHaveBeenCalled()
+      alertMock.mockRestore()
+    })
 
     it('ファイルサイズが3MBより大きい場合アラートが出ること', async () => {
       const alertMock = vi.spyOn(window, 'alert').mockImplementation(() => {})
       const wrapper = mount(FileDropzone)
 
-      const dataSize = 3 * 1024 * 1024 + 1
-      const dummyData = new Array(dataSize).fill('a')
-
+      // 3145729(3MBバイト以上のファイル)
+      const dataSize = 3 * 1024 * 1024 + 2
+      const dummyData = new Array(dataSize).join('a')
       const mockChangeEvent = {
         type: 'change',
         target: {
