@@ -154,7 +154,8 @@ async function postData() {
 }
 
 function removeFile(index) {
-  data.value.splice(index, 1)
+  const FILE_COUNT = 1
+  data.value.splice(index, FILE_COUNT)
 }
 </script>
 
