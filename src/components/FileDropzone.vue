@@ -74,12 +74,6 @@ function handleFiles(event) {
   files.forEach((file) => {
     data.value.push({ file: file, filename: file.name })
   })
-  const email = window.document.getElementById('Email')?.value
-  console.log('埋め込み側')
-  console.log('this', this)
-  console.log('window', window)
-  console.log('document', document)
-  console.log('email', email)
 }
 
 async function submitForm() {
@@ -94,8 +88,7 @@ async function submitForm() {
 
 async function postData() {
   const mktoId = document.getElementById('mktoId').value
-  const email = document.getElementById('Email').value
-  console.log('埋め込み側', this, email)
+  const email = document.getElementById('mktoEmail').value
 
   try {
     let processedFiles = 0
