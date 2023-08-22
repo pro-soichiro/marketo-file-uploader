@@ -74,6 +74,8 @@ function handleFiles(event) {
   files.forEach((file) => {
     data.value.push({ file: file, filename: file.name })
   })
+  const email = window.document.getElementById('Email')?.value
+  console.log('埋め込み側', this, email)
 }
 
 async function submitForm() {
