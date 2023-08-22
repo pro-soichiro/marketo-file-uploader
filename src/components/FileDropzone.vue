@@ -19,12 +19,10 @@ const fileInput = ref(null)
 
 let dragCounter = 0
 
-// ファイルダイアログを開く
 function openFileDialog() {
   fileInput.value?.click()
 }
 
-// ドラッグゾーンに入った時の処理
 function dragEnter() {
   dragCounter++
   if (dragCounter === 1) {
@@ -32,7 +30,6 @@ function dragEnter() {
   }
 }
 
-// ドラッグゾーンからでた時の処理
 function dragLeave() {
   dragCounter--
   if (dragCounter === 0) {
@@ -40,9 +37,6 @@ function dragLeave() {
   }
 }
 
-// ファイルを添付されたタイミングで実行される処理
-// - バリデーション
-// - dataへの格納
 function handleFiles(event) {
   dragCounter = 0
   isDraggingOver.value = false
@@ -82,7 +76,6 @@ function handleFiles(event) {
   })
 }
 
-// 送信ボタンクリック時の処理
 async function submitForm() {
   if (data.value.length <= 0) {
     alert('ファイルを選択してください。')
@@ -93,7 +86,6 @@ async function submitForm() {
   await postData()
 }
 
-// 送信処理
 async function postData() {
   const mktoId = document.getElementById('mktoId').value
   const email = document.getElementById('Email').value
