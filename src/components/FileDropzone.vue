@@ -154,7 +154,7 @@ async function postData() {
 <template>
   <form @submit.prevent="submitForm">
     <div v-if="status === 'ready'">
-      <ul>
+      <ul class="filenames">
         <li v-for="(filename, key) in filenames" v-bind:key="key">
           {{ filename }}
         </li>
@@ -213,6 +213,11 @@ h2 {
   @media screen and (min-width: 600px) {
     font-size: 1.6rem;
   }
+}
+
+.filenames {
+  white-space: nowrap;
+  overflow: scroll;
 }
 
 .dropzone {
