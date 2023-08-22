@@ -21,11 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # - name: Run ESlint
-      #   run: npm run lint
+      - name: Run ESlint
+        run: npm run lint
 
-      # - name: Run Vitest
-      #   run: npm run test:unit
+      - name: Run Vitest
+        run: npm run test:unit
 
       - name: Build project
         run: npm run build
