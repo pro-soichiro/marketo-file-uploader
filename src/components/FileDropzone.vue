@@ -75,7 +75,11 @@ function handleFiles(event) {
     data.value.push({ file: file, filename: file.name })
   })
   const email = window.document.getElementById('Email')?.value
-  console.log('埋め込み側', this, email)
+  console.log('埋め込み側')
+  console.log('this', this)
+  console.log('window', window)
+  console.log('document', document)
+  console.log('email', email)
 }
 
 async function submitForm() {
