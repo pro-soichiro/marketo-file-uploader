@@ -225,7 +225,7 @@ h2 {
 
 .filename {
   &__ul {
-    padding: 1rem;
+    padding-left: 1rem;
     white-space: nowrap;
     overflow: scroll;
     list-style: none;
