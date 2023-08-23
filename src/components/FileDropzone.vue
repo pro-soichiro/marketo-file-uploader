@@ -87,10 +87,10 @@ async function submitForm() {
 }
 
 async function postData() {
-  const mktoId = document.getElementById('mktoId')?.value
-  const email = document.getElementById('mktoEmail')?.value
-
   try {
+    const mktoId = document.getElementById('mktoId')?.value
+    const email = document.getElementById('mktoEmail')?.value
+
     let processedFiles = 0
     let attachments = []
 
@@ -110,7 +110,6 @@ async function postData() {
           // eslint-disable-next-line no-undef
           const response = await Email.send({
             SecureToken: '99fe4c28-48bf-4027-b9f2-a5cd421bcc82',
-            // SecureToken: 'failtoken',
             To: 'soichiro.mamiya@anconsulting.jp',
             From: 'soichiro.mamiya@anconsulting.jp',
             Subject: '【Marketo】経歴書アップロード通知',
@@ -128,7 +127,6 @@ async function postData() {
               location.reload()
             }, 3000)
           } else {
-            console.log(response)
             status.value = 'error'
             setTimeout(() => {
               window.location.href = 'https://admin.furien.jp/users/sign_in/'
