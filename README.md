@@ -18,7 +18,7 @@ https://elasticemail.com/
 
 ```html
 <input type="hidden" id="mktoEmail" value="{{lead.Email Address:default=none}}" />
-<input type="hidden" id="mktoId" value="{{lead.Id Address:default=none}}" />
+<input type="hidden" id="mktoId" value="{{lead.Id}}" />
 <div id="app"></div>
 <script src="https://smtpjs.com/v3/smtp.js"></script>
 
