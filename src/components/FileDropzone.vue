@@ -114,7 +114,7 @@ async function postData() {
             From: 'soichiro.mamiya@anconsulting.jp',
             Subject: '【Marketo】経歴書アップロード通知',
             Body: `■ファイルのアップロードがありました。<br><br>
-              Marketo ID:<br>${mktoId}<br><br>
+              Marketo要員ページ:<br>https://app-ab54.marketo.com/leadDatabase/loadLeadDetail?leadId=${mktoId}<br><br>
               Email:<br>${email}<br><br>
               経歴書:<br>${data.value.map((file) => file.filename).join('<br>')}
             `,
